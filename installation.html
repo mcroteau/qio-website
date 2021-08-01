@@ -1,0 +1,190 @@
+<html>
+<head>
+    <title>Qio Installation</title>
+
+    <meta name="description" content="Qio : Java Web Framework">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="assets/icon.png" rel="icon" type="image/png" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div id="wrapper">
+
+    <div style="width:100px; float:right">
+        <a class="github-button right" href="https://github.com/qio-framework/Qio" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" data-show-count="false" aria-label="Star qio-framework/Qio on GitHub">Star</a>
+    </div>
+    <br class="clear"/>
+
+    <h1 id="logo"><span class="qio">Q</span>io</h1>
+
+    <p>
+        <a href="index.html">Home</a>&nbsp;
+        <a href="quick-start.html">Quick Start</a>&nbsp;
+        <a href="installation.html">Installation</a>&nbsp;
+        <a href="deployment.html">Deployment</a>&nbsp;
+        <a href="dev-setup.html">Environment Setup</a>
+    </p>
+
+    <h1>Manual Installation</h1>
+
+    <h2>1. Install Qio Maven Dependency</h2>
+
+    <p>There are two versions of Qio, one built for the Java EE specification and the other
+    for the newer Jakarta EE specification. What's great is if you have a legacy Java EE
+        system and would like to clean up your code base, Qio can help. Both setups
+    are the same, basically the name spaces have changed and Qio's maven dependency coordinates
+    differ based on which specification you are developing for.</p>
+
+    <h3>Jakarta EE</h3>
+
+    <p>First, clone the Qio repo</p>
+
+    <pre>
+        <code>
+git clone https://github.com/qio-framework/Qio.git</code>
+    </pre>
+
+    <p>Then install Qio into your local repository, (we are currently working to move this artifact
+    to maven central).</p>
+
+    <pre>
+        <code>
+mvn install</code>
+    </pre>
+
+    <p>Then define the Qio dependency in your <strong>pom.xml</strong></p>
+
+    <pre>
+        <code>
+&lt;dependency&gt;
+    &lt;groupId&gt;dev.j3ee&lt;/groupId&gt;
+	&lt;artifactId&gt;qio&lt;/artifactId&gt;
+    &lt;version&gt;0.1-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code>
+    </pre>
+
+    <p>Notice that the group id is <strong>dev.j3ee</strong> and the version is <strong>0.1</strong>.
+    For Legacy systems the artifact coordinates will differ to this:</p>
+
+    <h3>Java EE Specification</h3>
+
+    <pre>
+        <code>
+&lt;dependency&gt;
+    &lt;groupId&gt;dev.j2ee&lt;/groupId&gt;
+	&lt;artifactId&gt;qio&lt;/artifactId&gt;
+    &lt;version&gt;0.5&lt;/version&gt;
+&lt;/dependency&gt;</code>
+    </pre>
+
+    <p>So for Jakarta EE project <strong>dev.j3ee</strong> &amp; for Java EE projects
+    <strong>dev.j2ee</strong>.</p>
+
+    <h2>2. Instantiate Qio</h2>
+
+    <p>You need to create a context event listener that implements <strong>ServletContextListener</strong>
+    and <strong>Overrides</strong> the context initialized event, like below:</p>
+
+    <pre>
+        <code>
+package dev.support;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import qio.Qio;
+
+
+@WebListener
+public class StartupListener implements ServletContextListener {
+
+    public void contextInitialized(ServletContextEvent sce) {
+        try {
+
+            ServletContext servletContext = sce.getServletContext();
+
+            new Qio.Injector()
+                    .devMode(true)//tells Qio to initialize h2
+                    .withDataEnabled(true)//is needed when accessing a database
+                    .asEmbedded(true)//yes, as we are using the awesome maven jetty plugin
+                    .withContext(servletContext)//qio needs this to store information to be used later
+                    .withWebResources(new String[]{ "assets" })//any directory within webapps that will serve static content
+                    .withPropertyFiles(new String[]{ "app.props" })//our properties files
+                    .inject();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("context destroyed...");
+    }
+}</code>
+    </pre>
+
+    <p>Once you have these two things in place, you are ready to start coding.</p>
+
+    <h2>Whats Next?</h2>
+
+    <p>Now that we have our project set up, we can create our first <strong>HttpHandler</strong>.
+    Here is what one looks like:</p>
+
+    <pre>
+        <code>
+package dev.web;
+
+import com.google.gson.Gson;
+import qio.annotate.HttpHandler;
+import qio.annotate.JsonOutput;
+import qio.annotate.verbs.Get;
+import qio.model.web.ResponseData;
+
+@HttpHandler
+public class HelloHandler {
+
+    Gson gson = new Gson();
+
+    @JsonOutput
+    @Get("/")
+    public String hi(ResponseData output){
+        output.put("message", "java is great!");
+        return gson.toJson(output);
+    }
+
+}
+</code>
+    </pre>
+
+
+
+    <h1 style="margin-top:90px;">Built by zqo</h1>
+
+    <div style="margin:140px 0px 70px 0px">
+        <h2>For support:</h2>
+        <p><a href="mailto:croteau.mike@gmail.com">croteau.mike@gmail.com</a></p>
+    </div>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P46HYHFQP4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-P46HYHFQP4');
+    </script>
+
+    <p style="margin-bottom:150px;">&copy; 2021 Qio</p>
+
+
+</div>
+</body>
+</html>

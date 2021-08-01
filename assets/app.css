@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap');
+
+html,body{
+    text-align: left;
+    padding:30px;
+}
+
+html,body,
+div, span, p, blockquote,
+h1, h2, h3, h4{
+    font-family: Roboto;
+}
+
+h1,h2,h3{font-weight: 900;margin:30px auto 10px;}
+
+h2{ text-align: left; }
+
+p{
+    font-size:19px;
+    line-height: 1.7em;
+    margin:0px auto 20px;
+    text-align: left;
+}
+
+#wrapper{
+    max-width: 690px;
+}
+
+#logo,
+#logo span{
+    font-size:82px;
+    margin:0px;
+}
+
+.qio{
+    color:#00b1ff;
+}
+
+.bolder{
+    font-weight: 900;
+}
+
+pre{
+    font-size:14px;
+    margin:0px auto 40px;
+    padding:0px 20px;
+    text-align: left;
+    background: #fff;
+    border:solid 1px #ddd;
+    overflow: scroll;
+    word-wrap: normal;
+    white-space: pre !important;
+    line-break: normal;
+}
+code{
+    font-family: 'Fira Code';
+    overflow: scroll;
+    white-space: pre !important;
+    line-break: normal;
+}
+
+.center{text-align: center;}
+
+img{display: block;margin:20px auto 40px;}
+
+a{
+    color:#00B1FF;
+    text-decoration: none;
+    border-bottom: dotted 2px #00B1FF;
+    font-weight: 300;
+}
+
+.right{float:right}
+.left{float:left}
+
+.widget-lg{
+    float:right;
+    text-align: right;
+}
+.clear{clear:both;}

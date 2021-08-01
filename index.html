@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>Qio Java Web Framework</title>
+
+    <meta name="description" content="Qio : Java Web Framework built for the Jakarta EE and Java EE Specifications">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="assets/icon.png" rel="icon" type="image/png" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+
+<!--    <style>-->
+<!--        #logo-wrapper{position: relative;height:96px;}-->
+<!--        #io {-->
+<!--            left:56px;-->
+<!--            position:absolute;-->
+<!--            display:inline-block;-->
+<!--            animation-duration: 0.4s;-->
+<!--            animation-name: slidein;-->
+<!--        }-->
+
+<!--        @keyframes slidein {-->
+<!--            from {-->
+<!--                left:-100px;-->
+<!--            }-->
+
+<!--            to {-->
+<!--                left:120px;-->
+<!--            }-->
+<!--        }-->
+
+<!--        #qio{-->
+<!--            position: absolute;-->
+<!--            display:inline-block;-->
+<!--            animation: qio-slide 2s, rollin 2s;-->
+<!--        }-->
+
+<!--        @keyframes rollin {-->
+<!--            from {-->
+<!--                transform: rotate(0deg);-->
+<!--            }-->
+<!--            to {-->
+<!--                transform: rotate(359deg);-->
+<!--            }-->
+<!--        }-->
+
+<!--        @keyframes qio-slide {-->
+<!--            from {-->
+<!--                left:-100px;-->
+<!--            }-->
+
+<!--            to {-->
+<!--                left:0px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+
+</head>
+<body>
+
+<div id="wrapper">
+
+    <div style="width:100px; float:right">
+        <a class="github-button right" href="https://github.com/qio-framework/Qio" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" data-show-count="false" aria-label="Star qio-framework/Qio on GitHub">Star</a>
+    </div>
+    <br class="clear"/>
+
+
+    <div id="logo-wrapper">
+        <h1 id="logo"><span class="qio" id="qio">Q</span><span id="io">io</span></h1>
+    </div>
+
+    <p>
+        <a href="index.html">Home</a>&nbsp;
+        <a href="quick-start.html">Quick Start</a>&nbsp;
+        <a href="installation.html">Installation</a>&nbsp;
+        <a href="deployment.html">Deployment</a>&nbsp;
+        <a href="dev-setup.html">Environment Setup</a>
+    </p>
+
+    <h1>Jakarta EE &amp; Java EE Web Framework</h1>
+
+    <p>Hurray! Jakarta EE, whoohoo Java EE! What does that mean if you are a developer? It means well
+        structured code, concise and clear separation of concerns, and magnificently
+        beautiful syntax. We love the Java World and have created a
+        61KB library called Qio to show it. It's small, sturdy, well tested
+        and produces beautiful applications.</p>
+
+    <p>What makes us different? Simplicity. With the power of annotations we
+        handle all of the heavy lifting of dependency injection for your application.
+        There are no configuration files only classes, and they will be small... we promise.</p>
+
+    <p>Oh, here's one now, the much needed DataSource object:</p>
+
+    <pre>
+    <code>
+@Config
+public class DbConfig {
+
+    //-> Variables
+
+    @Dependency
+    public DataSource dataSource(){
+        return new BasicDataSource.Builder()
+                .driver(dbDriver)
+                .url(dbUrl)
+                .username(dbUser)
+                .password(dbPass)
+                .build();
+    }
+
+}</code></pre>
+
+
+    <p>We hope you enjoy! Thank you.</p>
+
+    <h1 style="margin-top:90px;">Built by zqo</h1>
+
+    <div style="margin:140px 0px 70px 0px">
+        <h2>For support:</h2>
+        <p><a href="mailto:croteau.mike@gmail.com">croteau.mike@gmail.com</a></p>
+    </div>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P46HYHFQP4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-P46HYHFQP4');
+    </script>
+
+    <p style="margin-bottom:150px;">&copy; 2021 Qio</p>
+</div>
+</body>
+</html>
