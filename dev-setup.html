@@ -34,6 +34,44 @@
 
     <h1>Environment Setup</h1>
 
+    <p>Qio expects two things, one you have Apache Maven installed, and the other
+    that you have Java installed. Here are links for both:</p>
+
+    <h3>Apache Maven</h3>
+
+    <p>Download either the compiled binary zip or tar file and extract it to a location
+    that's accessible.</p>
+
+    <p><a href="https://maven.apache.org" target="_blank">https://maven.apache.org</a></p>
+
+    <h3>Open Jdk</h3>
+
+    <p>Download the same binaries for Java and extract them in a location that's accessible.</p>
+
+    <p><a href="https://adoptopenjdk.net/" target="_blank">https://adoptopenjdk.net</a></p>
+
+    <p>Next update your <strong>~/.bashrc</strong> if you are on a linux system and set
+        both <strong>JAVA_HOME</strong> and <strong>MAVEN_HOME</strong>
+        environment variables. Here is what your .bashrc should contain:</p>
+
+    <pre>
+        <code>
+#!/bin/bash
+
+export MAVEN_HOME=/Users/mike/Development/Tools/maven-current
+export PATH=$PATH:$MAVEN_HOME/bin
+
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home
+export PATH=$PATH:$JAVA_HOME/bin</code>
+    </pre>
+
+    <h2>Windows</h2>
+
+    <p>Check this article out... this guy is great for anything Java related:</p>
+
+    <p><a href="https://mkyong.com/java/how-to-set-java_home-on-windows-10/" target="_bank">https://mkyong.com/java/how-to-set-java_home-on-windows-10/</a></p>
+
     <h1 style="margin-top:90px;">Built by zqo</h1>
 
     <div style="margin:140px 0px 70px 0px">

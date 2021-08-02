@@ -36,7 +36,7 @@
 
     <h1>Quick Start</h1>
 
-    <p>Let's keep it simple. To quick bootstrap a Qio Java EE or Qio
+    <p>Let's keep it simple. To quickly bootstrap a Qio Java EE or Qio
         Jakarta EE project simply download the starter project for
         which ever you decide on.</p>
 
@@ -70,6 +70,619 @@ http://localhost:3000/q</code>
 
     <p>You should see some mock json. We are super appreciative of the Open Source/Community Driven
     World, you will be able to tell.</p>
+
+
+    <p>Qio is a full-fledged Java EE web framework. It's small
+        and has a lot of built in web capabilities. Let's
+        do two things... one let's start out slow and serve up a list
+        of Todos. Then if you are still interested
+        let's continue and build a complete Todo application to manage todos.
+        The full Todo app source can be found at
+        <a href="https://github.com/qio-framework/QioTodo" target="_blank">https://github.com/qio-framework/QioTodo</a>
+        The following will be a quick small and dirty application.
+        As we go through each class, you will see similarities with Qio
+        and other dependency injection web frameworks, however we offer
+        quick setup and we believe our classes are simple to follow.</p>
+
+    <p>First lets download the Qio Starter project.</p>
+
+    <pre>
+<code>
+git clone https://github.com/qio-framework/QioStarter.git</code>
+		</pre>
+
+    <p>This will have everything you need in order to begin developing a Qio based
+        artifact. Let's start by initializing a database. We do this by modifying
+        our <code>create-db.sql</code> located in <code>resources/qio</code>. Make yours
+        look like:</p>
+
+    <h2>create-db.sql</h2>
+
+    <pre>
+            <code>
+-- your create schema sql --
+create table todos (
+	id bigint PRIMARY KEY AUTO_INCREMENT,
+	title character varying(254) NOT NULL
+);
+
+insert into todos values (1, 'Exercise');
+insert into todos values (2, 'Finish reading');
+insert into todos values (3, 'Hopefully enjoy');</code>
+        </pre>
+
+    <p>Next, we need to configure Qio for
+        database access. We do this by setting <code>withDataEnabled(true)</code>
+        open up your <code>StartupListener</code>
+        located in <code>dev/support</code> and make it look like :</p>
+
+    <h2>StartupListener.java</h2>
+
+    <pre>
+            <code>
+package dev.support;
+
+import qio.Qio;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+
+@WebListener
+public class StartupListener implements ServletContextListener {
+
+    public void contextInitialized(ServletContextEvent sce) {
+        try {
+
+            ServletContext servletContext = sce.getServletContext();
+
+            new Qio.Injector()
+                    .devMode(true)//tells Qio to initialize h2
+                    .withDataEnabled(true)//is needed when accessing a database
+                    .asEmbedded(true)//for embedded environments
+                    .withContext(servletContext)//qio needs this to store information to be used later
+                    .withWebResources(new String[]{ "assets" })//any directory within webapps that will serve static content
+                    .withPropertyFiles(new String[]{ "app.props" })//a list of our properties files
+                    .inject();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("context destroyed...");
+    }
+}</code>
+        </pre>
+
+
+    <p>We are ready to develop our application. Let's start by creating our
+        domain object or model, the Todo,
+        we are going to store this in <code>src/main/java/dev/model</code>
+        back to our ide. Here is our <code>Todo</code> object.</p>
+
+    <h2>Todo.java</h2>
+
+    <pre>
+			<code>
+package dev.model;
+
+public class Todo {
+
+    Long id;
+    String title;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}</code>
+		</pre>
+
+
+    <p>Now let's create our much needed data access object called TodoRepo which
+        will act as a mediator between the backend and the database.</p>
+
+    <h2>TodoRepo.java</h2>
+
+    <pre>
+            <code>
+package dev.repo;
+
+import dev.model.Todo;
+import qio.Qio;
+import qio.annotate.DataStore;
+import qio.annotate.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@DataStore
+public class TodoRepo {
+
+    @Inject
+    Qio qio;
+
+    public Long getCount() {
+        String sql = "select count(*) from todos";
+        Long count = qio.getLong(sql, new Object[]{});
+        return count;
+    }
+
+    public Todo getById(long id){
+        String sql = "select * from todos where id = [+]";
+        Todo todo = (Todo) qio.get(sql, new Object[]{ id }, Todo.class);
+        return todo;
+    }
+
+    public List&lt;Todo&gt; getList(){
+        String sql = "select * from todos";
+        List&lt;Todo&gt; todos = (ArrayList) qio.getList(sql, new Object[]{}, Todo.class);
+        return todos;
+    }
+
+    public boolean save(Todo todo){
+        String sql = "insert into todos (title) values ('[+]')";
+        qio.save(sql, new Object[] {
+                todo.getTitle()
+        });
+        return true;
+    }
+
+    public boolean update(Todo todo) {
+        String sql = "update todos set title = '[+]' where id = [+]";
+        qio.update(sql, new Object[] {
+                todo.getTitle(),
+                todo.getId()
+        });
+        return true;
+    }
+
+    public boolean delete(long id){
+        String sql = "delete from todos where id = [+]";
+        qio.delete(sql, new Object[] { id });
+        return true;
+    }
+
+}</code>
+        </pre>
+
+    <p>There are a couple of things that are important here, one
+        the <code>@DataStore</code> annotation tells Qio to treat this as a data
+        store.</p>
+
+    <pre>
+			<code>
+@Inject
+Qio qio</code>
+		</pre>
+
+    <p>Tells Qio to inject an instance of itself into this data repository. We
+        will use the <code>qio</code> object to perform all data access operations.
+        A couple more things to touch on, when querying the database <code>[+]</code>
+        is used as a place holder for primitive objects like <code>int & long</code>.
+        <code>'[+]'</code> wrapped in <code>''</code> acts as a placeholder for
+        String data replacements. If you are familiar with Spring, then this will make sense.</p>
+
+    <p>Now we need to update our welcome or HelloHandler in this case and serve up
+        the list of Todos.</p>
+
+    <h2>HelloHandler.java</h2>
+
+    <pre>
+            <code>
+package dev.web;
+
+import com.google.gson.Gson;
+import dev.model.Todo;
+import dev.repo.TodoRepo;
+import qio.annotate.HttpHandler;
+import qio.annotate.Inject;
+import qio.annotate.JsonOutput;
+import qio.annotate.verbs.Get;
+import qio.model.web.ResponseData;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@HttpHandler
+public class HelloHandler {
+
+    Gson gson = new Gson();
+
+    @Inject
+    TodoRepo todoRepo;
+
+    @JsonOutput
+    @Get("/")
+    public String hi(HttpServletRequest request,
+                     HttpServletResponse response,
+                     ResponseData data){
+        List&lt;Todo&gt; todos = todoRepo.getList();
+        Map&lt;String, List&lt;Todo&gt;&gt; output = new HashMap&lt;&gt;();
+        output.put("todos", todos);
+        return gson.toJson(output);
+    }
+
+}</code>
+        </pre>
+
+
+    <p>We should now be ready to serve up our list of Todos. To run the project, its simple
+        as one command.</p>
+
+    <pre>
+            <code>
+mvn package jetty:run</code>
+        </pre>
+
+    <p>Now browse to:</p>
+
+    <pre>
+			<code>
+http://localhost:8080/q</code>
+		</pre>
+
+    <p>You should see pretty json output. We hope it was simple and
+        straight forward for you to get this initial project started. If you appreciate
+        our syntax, and appreciate the brevity... feel free to continue
+        and create a complete Todo management app with jsps and all.</p>
+
+
+    <h2>The Todo Management App</h2>
+
+    <p>First let's create the necessary directories located in
+        <code>src/main/java</code>. <code>dev/repo</code> and
+        <code>dev/service</code>. Our project structure should look like:</p>
+
+    <img src="media/package-directory.png" style="width:390px;"/>
+
+
+    <p>Let's create our Todo Service, Repo and Web Handler classes. Here is
+        our TodoHandler class. We name our Web Controllers Handlers to celebrate
+        Sun Microsystems and Oracle. Here is our new
+        TodoHandler.</p>
+
+    <h2>TodoHandler.java</h2>
+
+    <pre>
+			<code>
+package dev.web;
+
+import dev.service.TodoService;
+import qio.annotate.HttpHandler;
+import qio.annotate.Inject;
+import qio.annotate.Variable;
+import qio.annotate.verbs.Get;
+import qio.annotate.verbs.Post;
+import qio.model.web.ResponseData;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@HttpHandler
+public class TodoHandler {
+
+    @Inject
+    TodoService todoService;
+
+    @Get("/todos")
+    public String getList(HttpServletRequest request,
+                       HttpServletResponse response,
+                       ResponseData data){
+        return todoService.getList(data);
+    }
+
+    @Get("/todos/create")
+    public String getCreate(HttpServletRequest req,
+                        HttpServletResponse resp,
+                        ResponseData data){
+        return todoService.getCreate(data);
+    }
+
+    @Post("/todos/save")
+    public String saveTodo(HttpServletRequest req,
+                       HttpServletResponse resp,
+                       ResponseData data){
+        return todoService.saveTodo(req, data);
+    }
+
+    @Get("/todos/edit/{{id}}")
+    public String getEdit(HttpServletRequest req,
+                          HttpServletResponse resp,
+                          ResponseData data,
+                          @Variable Long id){
+        return todoService.getEdit(id, data);
+    }
+
+    @Post("/todos/update/{{id}}")
+    public String updateTodo(HttpServletRequest req,
+                             HttpServletResponse resp,
+                             ResponseData data,
+                             @Variable Long id){
+        return todoService.updateTodo(id, req, data);
+    }
+
+    @Post("/todos/delete/{{id}}")
+    public String deleteTodo(HttpServletRequest req,
+                             HttpServletResponse resp,
+                             ResponseData data,
+                             @Variable Long id){
+        return todoService.deleteTodo(id, data);
+    }
+
+
+}</code>
+		</pre>
+
+    <p><code>@HttpHandler</code> tells Qio to treat this as a web handler and traverse
+        all of the endpoints for later invocation. As you see we use the <code>@Inject</code>
+        annotation to inject the TodoService. We haven't created that yet so let's do that.</p>
+
+    <h2>TodoService.java</h2>
+
+    <pre>
+			<code>
+package dev.service;
+
+import dev.model.Todo;
+import dev.repo.TodoRepo;
+import qio.Qio;
+import qio.annotate.Inject;
+import qio.annotate.Service;
+import qio.model.web.ResponseData;
+
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+
+@Service
+public class TodoService {
+
+    @Inject
+    TodoRepo todoRepo;
+
+    public String getList(ResponseData data) {
+        List&lt;Todo&gt; todos = todoRepo.getList();
+        data.put("todos", todos);
+        return "/pages/todo/list.jsp";
+    }
+
+    public String getCreate(ResponseData data) {
+        return "/pages/todo/create.jsp";
+    }
+
+    public String saveTodo(HttpServletRequest req, ResponseData data) {
+        Todo todo = (Todo) Qio.hydrate(req, Todo.class);
+        todoRepo.save(todo);
+        data.put("message", "Successfully added todo!");
+        return "[redirect]/todos";
+    }
+
+    public String getEdit(Long id, ResponseData data) {
+        Todo todo = todoRepo.getById(id);
+        data.put("todo", todo);
+        return "/pages/todo/edit.jsp";
+    }
+
+    public String updateTodo(Long id, HttpServletRequest req, ResponseData data) {
+        Todo todo = todoRepo.getById(id);
+        todo.setTitle(req.getParameter("title"));
+        todoRepo.update(todo);
+        data.put("message", "Successfully updated todo!");
+        return "[redirect]/todos/edit/" + todo.getId();
+    }
+
+    public String deleteTodo(Long id, ResponseData data) {
+        todoRepo.delete(id);
+        data.put("message", "Successfully deleted todo!");
+        return "[redirect]/todos";
+    }
+}</code>
+		</pre>
+
+
+    <p><code>@Service</code> tells Qio to treat this class as a Service class.
+        The service will perform all of our business logic for us.
+        Why do this? Why not cram all of our logic within our Handler?
+        So there is a clear separation of concerns, the code is cleaner and
+        more manageable as well as testable...</p>
+
+    <p>Our backend logic is in place! </p>
+
+    <p>Let's add our supporting jsps within our <code>webapps/pages</code> directory. For the
+        sake of simplicity, here are the 4 jsps you need.</p>
+
+    <h2>pages/todo/create.jsp</h2>
+
+    <pre>
+			<code>
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;New Todo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;New Todo&lt;/h1&gt;
+
+    &lt;p&gt;&lt;a href=&quot;${pageContext.request.contextPath}/todos&quot;&gt;Back to Todos&lt;/a&gt;&lt;/p&gt;
+
+    &lt;form action=&quot;${pageContext.request.contextPath}/todos/save&quot; method=&quot;post&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;&quot;/&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Save&quot;/&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code>
+		</pre>
+
+    <h2>pages/todo/edit.jsp</h2>
+
+    <pre>
+			<code>
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Edit Todo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Edit Todo&lt;/h1&gt;
+
+    &lt;c:if test=&quot;${not empty message}&quot;&gt;
+        &lt;p&gt;${message}&lt;/p&gt;
+    &lt;/c:if&gt;
+
+    &lt;p&gt;&lt;a href=&quot;${pageContext.request.contextPath}/todos&quot;&gt;Back to Todos&lt;/a&gt;&lt;/p&gt;
+
+    &lt;form action=&quot;${pageContext.request.contextPath}/todos/update/${todo.id}&quot; method=&quot;post&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;${todo.title}&quot;/&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Update&quot;/&gt;
+    &lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code>
+		</pre>
+
+    <h2>pages/todo/list.jsp</h2>
+
+    <pre>
+			<code>
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Todos&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;Todos&lt;/h1&gt;
+
+    &lt;c:if test=&quot;${not empty message}&quot;&gt;
+        &lt;p&gt;${message}&lt;/p&gt;
+    &lt;/c:if&gt;
+
+    &lt;a href=&quot;${pageContext.request.contextPath}/todos/create&quot;&gt;New Todo&lt;/a&gt;
+
+    &lt;c:if test=&quot;${todos.size() &gt; 0}&quot;&gt;
+        &lt;table&gt;
+            &lt;c:forEach items=&quot;${todos}&quot; var=&quot;todo&quot;&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;${todo.id}&lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;a href=&quot;${pageContext.request.contextPath}/todos/edit/${todo.id}&quot;&gt;${todo.title}&lt;/a&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;form action=&quot;${pageContext.request.contextPath}/todos/delete/${todo.id}&quot; method=&quot;post&quot;&gt;
+                            &lt;input type=&quot;submit&quot; value=&quot;Delete&quot;/&gt;
+                        &lt;/form&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/c:forEach&gt;
+        &lt;/table&gt;
+    &lt;/c:if&gt;
+
+    &lt;c:if test=&quot;${todos.size() == 0}&quot;&gt;
+        &lt;p&gt;No todos created yet...&lt;/p&gt;
+    &lt;/c:if&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code>
+		</pre>
+
+    <p>Finally our <code>index.jsp</code> or our simple welcome page.</p>
+
+    <h2>pages/index.jsp</h2>
+
+    <pre>
+			<code>
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Todos&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome... &lt;/h1&gt;
+    &lt;p&gt;Let's check out your todo list...
+        &lt;a href=&quot;${pageContext.request.contextPath}/todos&quot;&gt;Todos&lt;/a&gt;
+    &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code>
+		</pre>
+
+    <p>Our jsps are in place, now there is one final step. Our <code>HelloHandler</code>
+        currently has <code>@Get("/")</code> serving up a placeholder json response. Let's
+        change that. Let's update our <code>HelloHandler</code> to serve up a the index.jsp
+        file we just created.</p>
+
+    <h2>HelloHandler.java</h2>
+
+    <pre>
+			<code>
+package dev.web;
+
+import qio.annotate.HttpHandler;
+import qio.annotate.verbs.Get;
+import qio.model.web.ResponseData;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@HttpHandler
+public class HelloHandler {
+
+    @Get("/")
+    public String hi(HttpServletRequest request,
+                     HttpServletResponse response,
+                     ResponseData data){
+        return "/pages/index.jsp";
+    }
+
+}</code>
+		</pre>
+
+    <p>So we are all set, our project is ready to be run. Open up a terminal and run:</p>
+
+    <pre>
+			<code>
+mvn package jetty:run</code>
+		</pre>
+
+    <p>and again browse to: </p>
+
+    <pre>
+			<code>
+http://localhost:8080/q</code>
+		</pre>
+
+    <p>You should now have a complete Java EE Todo app ready to go!
+        Was it easy and enjoyable? If so let me know?
+        <a href="mailto:croteau.mike@gmail.com">croteau.mike@gmail.com</a></p>
+
+    <p>A note, we love Spring! If you are not familiar with Spring, it is an
+        extensive framework with a lot of capabilities.
+        Your project may need a more extensive solution, if so...
+        we recommend Spring. Consider us Sprite Light vs Coca Cola. Thank you Spring
+        for teaching us what dependency injection is, service oriented architecture,
+        data persistence and everything J2ee. We thank you.
+        <a href="http://www.spring.io">http://www.spring.io</a>
+    </p>
+
 
 
     <h1 style="margin-top:90px;">Built by zqo</h1>

@@ -34,7 +34,103 @@
 
     <h1>Deployment</h1>
 
-    <p></p>
+    <p>Deploying to a production environment doesn't necessarily
+        require a stand alone version of a servlet container, but it is
+        recommended. There is <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>,
+        <a href="https://www.eclipse.org/jetty/" target="_blank">Jetty</a>,
+        <a href="https://undertow.io/" target="_blank">Undertow</a> and
+        <a href="https://javaee.github.io/glassfish/" target="_blank">Glassfish</a>,
+    you take your pick. Each are amazing products. A lot of intelligence and
+    hard work went into each. There are community editions. They are great!</p>
+
+    <p>Update your Qio initialization code setting <strong>devMode</strong> to
+    false. When in devMode Qio creates and drops a H2 database for you looking for a
+    <strong>src/main/resources/qio/creat-db.sql</strong> that should contain all the
+    necessary sql to create all the database tables and insert any development
+    data. We don't need this in production, so create a new sql file for your
+    <strong>create-db.sql</strong> to match MySQL's dialect...
+        <strong>varchar</strong> to <strong>character varying</strong>
+        is really all you need to change.</p>
+
+    <p>You will also need to update the <strong>asEmbedded</strong> to false. </p>
+
+    <pre>
+        <code>
+new Qio.Injector()
+        .devMode(false)//update to false for production
+        .asEmbedded(false)//update to false for production
+        .withDataEnabled(true)//is needed when accessing a database, looks for a dataSource object in your configurations
+        .withContext(servletContext)
+        .withWebResources(new String[]{ "assets" })
+        .withPropertyFiles(new String[]{ "app.props" })//located in src/main/resources
+        .inject();</code>
+    </pre>
+
+
+    <p>You can leverage the embedded version of H2 as
+        your datasource but we recommend MySQL. If you have your (preferably) Linux
+        system configured with MySQL simply update your <strong>app.props</strong>
+        to fit your MySQL instance :</p>
+
+    <pre>
+        <code>
+### Db Live Settings ###
+db.url=jdbc:mysql://localhost:3306/database_name
+db.driver=com.mysql.jdbc.Driver
+db.user=user
+db.pass=password</code>
+    </pre>
+
+    <p>You will need to manually create all the tables for your project before deploying.
+        The <strong>app.props</strong> or any property files you list in your configuration
+        need to reside in the <strong>src/main/resources</strong> directory.
+        Make sure you have the MySQL database driver in your list of dependencies.</p>
+
+    <pre>
+        <code>
+&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;version&gt;8.0.26&lt;/version&gt;
+&lt;/dependency&gt;</code>
+    </pre>
+
+    <p>Finally you need to create what is called a <strong>war</strong> file.
+    It stands for Web Archive file. Run the following command and it should output
+    to <strong>target</strong>.</p>
+
+    <pre>
+        <code>
+mvn package</code>
+    </pre>
+
+    <p>Next depending on your servlet container, deploy by copying the <strong>.war</strong>
+    file to the servlet containers webapps directory giving it a new name so that
+    your application context isn't funny and doesn't contain a version.</p>
+
+    <pre>
+        <code>
+cp project-0.1-SNAPSHOT.war tomcat/webapps/p.war</code>
+    </pre>
+
+    <p>This will explode the .war file and deploy the application.</p>
+
+    <p>You could run your project in the background and use
+    something like nginx to reverse proxy to your application simple add
+        an ampersand to the run command :</p>
+
+    <pre>
+        <code>
+mvn package jetty:run &</code>
+    </pre>
+
+    <p>The ampersand tells your computer to run it in the background, this of course
+    is for Unix based operating systems. </p>
+
+    <p>If it feels like we are talking in too of simple terms, forgive us. We don't know
+    what you know or what you need to know. We are here to help, feel free to ping us
+    anytime for question regarding anything and everything Java development.</p>
+
 
     <h1 style="margin-top:90px;">Built by zqo</h1>
 
