@@ -14,3 +14,104 @@ p{font-family: 'Roboto'}
 header {
     display: none;
 }
+
+
+html,body{
+    text-align: left;
+    /*padding:30px;*/
+    padding:0px;
+    margin:0px;
+}
+
+html,body,
+div, span, p, blockquote,
+h1, h2, h3, h4{
+    font-family: Roboto;
+}
+
+h1,h2,h3{font-weight: 900;margin:30px auto 10px;}
+
+h2{ text-align: left; }
+
+p{
+    font-size:19px;
+    line-height: 1.7em;
+    margin:0px auto 20px;
+    text-align: left;
+}
+
+#wrapper{
+    max-width: 690px;
+    padding:20px 60px;
+}
+
+#header-wrapper{
+    background: #00B1FF;
+    background:#f5fcff;
+    background: #edf1f3;
+    background: #fff;
+    padding:100px 60px 40px;
+}
+
+#qio{
+    color:#FFC329;
+    color:#00B1FF;
+    text-shadow: 0px 4px 7px #d8e6ec;
+}
+#io{
+    color:#000;
+    text-shadow: 0px 4px 7px #d8e6ec;
+}
+
+#logo,
+#logo span{
+    font-size:92px;
+    margin:0px;
+}
+
+.qio{
+    color:#00b1ff;
+}
+
+.bolder{
+    font-weight: 900;
+}
+
+pre{
+    font-size:14px;
+    margin:0px auto 40px;
+    padding:0px 20px;
+    text-align: left;
+    background: #fff;
+    border:solid 1px #ddd;
+    overflow: scroll;
+    word-wrap: normal;
+    white-space: pre !important;
+    line-break: normal;
+}
+code{
+    font-family: 'Fira Code';
+    overflow: scroll;
+    white-space: pre !important;
+    line-break: normal;
+}
+
+.center{text-align: center;}
+
+img{display: block;margin:20px auto 40px;}
+
+a{
+    color:#00B1FF;
+    text-decoration: none;
+    border-bottom: dotted 2px #00B1FF;
+    font-weight: 300;
+}
+
+.right{float:right}
+.left{float:left}
+
+.widget-lg{
+    float:right;
+    text-align: right;
+}
+.clear{clear:both;}
