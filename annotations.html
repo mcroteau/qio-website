@@ -1,0 +1,177 @@
+<html>
+<head>
+    <title>Qio Annotations</title>
+
+    <meta name="description" content="Qio : Java Web Framework">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link href="assets/icon.png" rel="icon" type="image/png" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div id="header-wrapper">
+    <div style="width:100px; float:right">
+        <a class="github-button right" href="https://github.com/qio-framework/Qio" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" data-show-count="false" aria-label="Star qio-framework/Qio on GitHub">Star</a>
+    </div>
+    <br class="clear"/>
+
+    <div id="logo-wrapper">
+        <h1 id="logo"><span class="qio" id="qio">Q</span><span id="io">io</span></h1>
+    </div>
+</div>
+
+<div id="wrapper">
+
+    <p>
+        <a href="index.html">Home</a>&nbsp;
+        <a href="quick-start.html">Quick Start</a>&nbsp;
+        <a href="installation.html">Installation</a>&nbsp;
+        <a href="deployment.html">Deployment</a>&nbsp;
+        <a href="dev-setup.html">Environment Setup</a>&nbsp;
+        <a href="annotations.html">Annotations</a>
+    </p>
+
+    <h1>Annotations</h1>
+
+    <p>Annotations are a way to bind additional information to classes,
+    methods and variables. You will use them extensively throughout your application as
+    there are no configuration files. Qio uses them for more than one purpose but
+    the main purpose is dependency injection. If you are familiar with Spring then
+    you are familiar with the .xml configuration files you have had to configure, they
+    paved the way and introduced annotation driven and thats the direction we went as
+    well.</p>
+
+    <h3>@HttpHandler</h3>
+
+    <p>Your web controller or what we like to call HttpHandlers. Each handler can have
+    multiple endpoints defined like below.</p>
+
+    <pre>
+            <code>
+package dev.web;
+
+import com.google.gson.Gson;
+import dev.model.Todo;
+import dev.repo.TodoRepo;
+import qio.annotate.HttpHandler;
+import qio.annotate.Inject;
+import qio.annotate.JsonOutput;
+import qio.annotate.verbs.Get;
+import qio.model.web.ResponseData;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@HttpHandler
+public class HelloHandler {
+
+    Gson gson = new Gson();
+
+    @Inject
+    TodoRepo todoRepo;
+
+    @JsonOutput
+    @Get("/")
+    public String hi(ResponseData output){
+        List&lt;Todo&gt; todos = todoRepo.getList();
+        output.put("todos", todos);
+        return gson.toJson(output);
+    }
+
+}</code>
+    </pre>
+
+
+    <h3>@Service</h3>
+
+    <p>Services can perform your business logic. Do what you will with them. They
+        are glorified <strong>@Elements</strong></p>
+
+    <h3>@DataStore</h3>
+    <p>DataStores are treated like repositories or data access objects. They are expected
+    to interact with your database, save data, retrieve data, etc.</p>
+
+    <h3>@Element</h3>
+
+    <p>A plain java component, bean or element.</p>
+
+    <h3>@Config</h3>
+
+    <p>Methods on the @Config class expects objects to be newed up like below
+    using the @Dependency annotation.</p>
+
+    <pre>
+        <code>
+@Config
+public class DbConfig {
+
+    @Dependency
+    public DataSource dataSource(){
+        return new BasicDataSource.Builder()
+                .driver(dbDriver)
+                .url(dbUrl)
+                .username(dbUser)
+                .password(dbPass)
+                .build();
+    }
+
+}</code></pre>
+
+    <h3>@Dependency</h3>
+    <p>Used in conjunction with <strong>@Config</strong> classes to new up
+    objects/dependencies. </p>
+
+    <h3>@Property</h3>
+    <p>It is what is yo! A property. It is expected to be available in one of
+    the properties you define in your <strong>src/main/resources/qio.props</strong>
+        file like so:</p>
+
+     <pre>
+        <code>
+qio.dev=true
+qio.assets=assets
+qio.properties=qio.props</code>
+    </pre>
+
+    <p>List all of your properties in the qio.props file or in multiple locations,
+    it doesn't matter.</p>
+
+
+    <h3>@Events</h3>
+    <p>Decorate your class with this annotation combined with implementing
+    <strong>QioEvents</strong> and you can tie into the <strong>setupComplete(Qio qio)</strong>
+    event. This gets fired after everything is done... dependency injection, database setup,
+    endpoint processing.. etc.</p>
+
+    <p>If you can't tell, we are about simplicity.</p>
+
+
+    <h1 style="margin-top:90px;">Built by zqo</h1>
+
+    <div style="margin:140px 0px 70px 0px">
+        <h2>For support:</h2>
+        <p><a href="mailto:croteau.mike@gmail.com">croteau.mike@gmail.com</a></p>
+    </div>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P46HYHFQP4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-P46HYHFQP4');
+    </script>
+
+    <p style="margin-bottom:150px;">&copy; 2021 Qio</p>
+
+
+</div>
+</body>
+</html>

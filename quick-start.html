@@ -113,52 +113,14 @@ insert into todos values (2, 'Finish reading');
 insert into todos values (3, 'Hopefully enjoy');</code>
         </pre>
 
-    <p>Next, we need to configure Qio for
-        database access. We do this by setting <code>withDataEnabled(true)</code>
-        open up your <code>StartupListener</code>
-        located in <code>dev/support</code> and make it look like :</p>
-
-    <h2>StartupListener.java</h2>
+    <p>Next, we need to configure our application...
 
     <pre>
-            <code>
-package dev.support;
-
-import qio.Qio;
-
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
-
-@WebListener
-public class StartupListener implements ServletContextListener {
-
-    public void contextInitialized(ServletContextEvent sce) {
-        try {
-
-            ServletContext servletContext = sce.getServletContext();
-
-            new Qio.Injector()
-                    .devMode(true)//tells Qio to initialize h2
-                    .withDataEnabled(true)//is needed when accessing a database
-                    .asEmbedded(true)//for embedded environments
-                    .withContext(servletContext)//qio needs this to store information to be used later
-                    .withWebResources(new String[]{ "assets" })//any directory within webapps that will serve static content
-                    .withPropertyFiles(new String[]{ "app.props" })//a list of our properties files
-                    .inject();
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println("context destroyed...");
-    }
-}</code>
-        </pre>
-
+        <code>
+qio.dev=true
+qio.assets=assets
+qio.properties=qio.props</code>
+    </pre>
 
     <p>We are ready to develop our application. Let's start by creating our
         domain object or model, the Todo,
