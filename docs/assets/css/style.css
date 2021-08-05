@@ -1,4 +1,13 @@
-@import "jekyll-theme-hacker";
+@import "{{ jekyll-theme-hacker }}";
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+html,
+body,
+h1,h2,h3{ font-family: 'Press Start 2P'}
+
+h1{font-size:92px;}
+h2{font-size:69px;}
+h3{font-size:47px;}
 
 header {
     display: none;
