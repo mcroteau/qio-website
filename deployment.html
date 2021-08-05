@@ -32,8 +32,9 @@
         <a href="index.html">Home</a>&nbsp;
         <a href="quick-start.html">Quick Start</a>&nbsp;
         <a href="installation.html">Installation</a>&nbsp;
-        <a href="deployment.html">Deployment</a>&nbsp;
-        <a href="dev-setup.html">Environment Setup</a>
+        <a href="dev-setup.html">Setup</a>&nbsp;
+        <a href="annotations.html">Annotations</a>&nbsp;
+        <a href="deployment.html">Deployment</a>
     </p>
 
     <h1>Deployment</h1>
@@ -47,39 +48,32 @@
     you take your pick. Each are amazing products. A lot of intelligence and
     hard work went into each. There are community editions. They are great!</p>
 
-    <p>Update your Qio initialization code setting <strong>devMode</strong> to
+    <p>Update your <strong>qio.props</strong> settings <strong>dev</strong> to
     false. When in devMode Qio creates and drops a H2 database for you looking for a
-    <strong>src/main/resources/qio/creat-db.sql</strong> that should contain all the
+    <strong>src/main/resources/creat-db.sql</strong> that should contain all the
     necessary sql to create all the database tables and insert any development
     data. We don't need this in production, so create a new sql file for your
     <strong>create-db.sql</strong> to match MySQL's dialect...
         <strong>varchar</strong> to <strong>character varying</strong>
         is really all you need to change.</p>
 
-    <p>You will also need to update the <strong>asEmbedded</strong> to false. </p>
-
     <pre>
         <code>
-new Qio.Injector()
-        .devMode(false)//update to false for production
-        .asEmbedded(false)//update to false for production
-        .withDataEnabled(true)//is needed when accessing a database, looks for a dataSource object in your configurations
-        .withContext(servletContext)
-        .withWebResources(new String[]{ "assets" })
-        .withPropertyFiles(new String[]{ "app.props" })//located in src/main/resources
-        .inject();</code>
+qio.dev=false
+qio.assets=assets
+qio.properties=qio.props</code>
     </pre>
 
 
     <p>You can leverage the embedded version of H2 as
         your datasource but we recommend MySQL. If you have your (preferably) Linux
-        system configured with MySQL simply update your <strong>app.props</strong>
+        system configured with MySQL simply update your <strong>qio.props</strong>
         to fit your MySQL instance :</p>
 
     <pre>
         <code>
 ### Db Live Settings ###
-db.url=jdbc:mysql://localhost:3306/database_name
+db.url=jdbc:mysql://localhost:3306/database
 db.driver=com.mysql.jdbc.Driver
 db.user=user
 db.pass=password</code>

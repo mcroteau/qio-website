@@ -32,9 +32,9 @@
         <a href="index.html">Home</a>&nbsp;
         <a href="quick-start.html">Quick Start</a>&nbsp;
         <a href="installation.html">Installation</a>&nbsp;
-        <a href="deployment.html">Deployment</a>&nbsp;
-        <a href="dev-setup.html">Environment Setup</a>&nbsp;
-        <a href="annotations.html">Annotations</a>
+        <a href="dev-setup.html">Setup</a>&nbsp;
+        <a href="annotations.html">Annotations</a>&nbsp;
+        <a href="deployment.html">Deployment</a>
     </p>
 
     <h1>Annotations</h1>
@@ -96,7 +96,20 @@ public class HelloHandler {
 
     <h3>@DataStore</h3>
     <p>DataStores are treated like repositories or data access objects. They are expected
-    to interact with your database, save data, retrieve data, etc.</p>
+    to interact with your database, save data, retrieve data, etc. Inject Qio using
+    the <strong>@Inject</strong> annotation. Like so:</p>
+
+    <pre>
+        <code>
+@Inject
+Qio qio</code>
+    </pre>
+
+    <h3>@Inject</h3>
+    <p>Any service that has either a <strong>@Service</strong>, <strong>@DataStore</strong> or
+        <strong>@Element</strong> will be available to you via the <strong>@Inject</strong>
+    annotation.</p>
+
 
     <h3>@Element</h3>
 
@@ -150,7 +163,7 @@ qio.properties=qio.props</code>
     event. This gets fired after everything is done... dependency injection, database setup,
     endpoint processing.. etc.</p>
 
-    <p>If you can't tell, we are about simplicity.</p>
+    <p>We are about simplicity.</p>
 
 
     <h1 style="margin-top:90px;">Built by zqo</h1>
