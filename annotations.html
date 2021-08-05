@@ -97,7 +97,9 @@ public class HelloHandler {
     <h3>@DataStore</h3>
     <p>DataStores are treated like repositories or data access objects. They are expected
     to interact with your database, save data, retrieve data, etc. Inject Qio using
-    the <strong>@Inject</strong> annotation. Like so:</p>
+    the <strong>@Inject</strong> annotation. Like below and you'll have your connection
+        to the database (you will of course need to have a data source provided as well.
+        The QioStarter has a basic datasource configured for you already.):</p>
 
     <pre>
         <code>
