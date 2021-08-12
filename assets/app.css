@@ -36,7 +36,7 @@ p{
     background:#f5fcff;
     background: #edf1f3;
     background: #fff;
-    padding:100px 60px 40px;
+    padding:100px 60px 30px;
 }
 
 #qio{
@@ -53,6 +53,11 @@ p{
 #logo span{
     font-size:92px;
     margin:0px;
+}
+
+#qio-identity{
+    font-weight:400;
+    font-size:46px;
 }
 
 .qio{
