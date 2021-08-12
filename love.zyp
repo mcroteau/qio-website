@@ -1,0 +1,26 @@
+import global;
+import enjoyment;
+import refreshments;
+import duwop;
+import senses;
+import music;
+
+global.play(music.getSong(Goldroom.Embrace));
+global.whisper("I love you.", 3);
+
+def group = global.getPeople();
+for(person in group){
+    person.give(enjoyment.enjoyment().getPizza(1, enjoyment.CHEESE);
+    timer(1000 * 60);
+    person.enjoy(refreshments.interrogate(person.refreshmentType(), 1000 * 15);
+    if(person.agrees(duwop.dance(1000 * 3))){
+        if(person.isMale()){
+            person.dance(duwop.beepbop(), 1000 * 3);
+        }
+        if(person.isBeauty()){
+            person.dance(senses.wow(), 1000 * 3);
+        }
+    }
+}
+
+
