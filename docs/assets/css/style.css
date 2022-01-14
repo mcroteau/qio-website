@@ -18,14 +18,15 @@ header {
 
 html,body{
     text-align: left;
-    /*padding:30px;*/
     padding:0px;
     margin:0px;
+    background-color: #5bc8f2;
 }
 
 html,body,
 div, span, p, blockquote,
 h1, h2, h3, h4{
+    color:#fff;
     font-family: Roboto;
 }
 
@@ -87,14 +88,14 @@ pre{
     margin:0px auto 40px;
     padding:0px 20px;
     text-align: left;
-    background: #fff;
+    background: #77daff;
     border:solid 1px #ddd;
-    overflow: scroll;
     word-wrap: normal;
     white-space: pre !important;
     line-break: normal;
 }
 code{
+    background: #77daff;
     font-family: 'Fira Code';
     overflow: scroll;
     white-space: pre !important;
@@ -106,9 +107,9 @@ code{
 img{display: block;margin:20px auto 40px;}
 
 a{
-    color:#00B1FF;
+    color:#FDF47A;
     text-decoration: none;
-    border-bottom: dotted 2px #00B1FF;
+    border-bottom: dotted 2px #FDF47A;
     font-weight: 300;
 }
 
