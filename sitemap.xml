@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
+    <url>
+        <loc>http://qioframework.io/index.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+    <url>
+        <loc>http://qioframework.io/quick-start.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+    <url>
+        <loc>http://qioframework.io/installation.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+    <url>
+        <loc>http://qioframework.io/dev-setup.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+    <url>
+        <loc>http://qioframework.io/annotations.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+    <url>
+        <loc>http://qioframework.io/deployment.html</loc>
+        <lastmod>2022-08-16</lastmod>
+    </url>
+</urlset>
